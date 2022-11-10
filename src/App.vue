@@ -6,19 +6,21 @@ import HelloWorld from "./components/HelloWorld.vue";
 <template>
   <header>
     <img
-      alt="Vue logo"
+      alt="Home-logo"
       class="logo"
       src="@/assets/logo.svg"
-      width="125"
-      height="125"
+      width="140"
+      height="140"
     />
 
     <div class="wrapper">
-      <HelloWorld msg="Cocktail Pantry" />
+      <HelloWorld msg="Cocktail Database"/>
 
       <nav>
         <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/pantry">Pantry</RouterLink>
+        <RouterLink to="/craft">Create</RouterLink>
+        <RouterLink to="/cocktails">Cocktails</RouterLink>
+        <RouterLink to="/mypantry">MyPantry</RouterLink>
       </nav>
     </div>
   </header>
@@ -42,6 +44,8 @@ nav {
   font-size: 12px;
   text-align: center;
   margin-top: 2rem;
+  top: -8px;
+  left: 7px;
 }
 
 nav a.router-link-exact-active {
@@ -55,7 +59,6 @@ nav a.router-link-exact-active:hover {
 nav a {
   display: inline-block;
   padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
 }
 
 nav a:first-of-type {
@@ -66,11 +69,14 @@ nav a:first-of-type {
   header {
     display: flex;
     place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
+    padding: calc(var(--section-gap) / 4);
+    white-space: nowrap;
   }
 
   .logo {
-    margin: 0 2rem 0 0;
+    position: relative;
+    margin: 0 1rem 1rem 0;
+    background-color: transparent
   }
 
   header .wrapper {
