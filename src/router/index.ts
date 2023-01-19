@@ -5,24 +5,24 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: "/",
+      path: "/home",
       name: "home",
       component: HomeView,
     },
     {
-      path: "/craft",
+      path: "/",
       name: "Craft",
       component: () => import("../views/CraftView.vue"),
     },
     {
       path: "/cocktails",
       name: "Cocktails",
-      component: () => import("../views/CocktailView.vue"),
+      component: () => import("../views/InProgress.vue"), 
     },
     {
       path:"/mypantry",
       name: "MyPantry",
-      component: () => import("../views/MyPantryView.vue"),
+      component: () => import("../views/InProgress.vue"),
     },
   ],
 });

@@ -1,20 +1,9 @@
 <template>
-  <!--Ingredient selection-->
-  <v-container
-    v-show="show_card1"
-    class="justify-center"
-  >
-    <v-card
-      class="d-flex flex-row"
-      max-width="450"
-      height="740"
-    >
-      <v-tabs
-        v-model="activeTab"
-        direction="vertical"
-      >
+  <v-container v-if="show_default">
+    <v-card class="d-flex flex-row" max-width="450" height="740">
+      <!--Ingredient category tabs-->
+      <v-tabs v-model="activeTab" direction="vertical">
         <v-tab
-          class="hover"
           v-for="(cat, index) in Object.keys(category)"
           @click="() => filterIngredients(cat)"
           :key="cat"
@@ -26,20 +15,14 @@
         </v-tab>
       </v-tabs>
 
-      <v-window v-model="activeTab">
+      <v-window v-model="activeTab" style="overflow-y: scroll">
         <v-window-item
           v-for="(cat, index) in Object.keys(category)"
           :value="category[cat]"
         >
           <v-card flat>
-            <v-list
-              lines="one"
-              select-strategy="multiple"
-              style="height: 740px; width: 450px; overflow-y: scroll"
-            >
-              <template
-                v-for="sub_cat in Object.keys(category[cat])"
-              >
+            <v-list lines="one" select-strategy="multiple">
+              <template v-for="sub_cat in Object.keys(category[cat])">
                 <v-list-item
                   v-if="typeof(category[cat]) == 'object'"
                   :key="category[cat][sub_cat]"
@@ -50,13 +33,9 @@
                     {{ category[cat][sub_cat] }}
                   </v-list-item-title>
                 </v-list-item>
-                <template
-                  v-for="(ing, index) in filtered_ingredients"
-                >
+                <template v-for="(ing, index) in filtered_ingredients">
                   <v-list-item
-                    class="hover"
                     v-ripple="false"
-
                     v-if="ing.category.includes(sub_cat)"
                     :key="ing"
                     :title="ing.name"
@@ -68,9 +47,7 @@
                 </template>
               </template>
               <v-list-item
-                class="hover"
                 v-ripple="false"
-
                 v-for="(ing, index) in filtered_ingredients"
                 v-if="typeof(category[cat]) == 'string'"
                 :key="ing"
@@ -87,46 +64,49 @@
     </v-card>
   </v-container>
 
-  <!--Cocktail Component-->
-  <div
-    v-show="show_card2"
-    class="justify-center"
-  >
-    <Cocktails :cocktails="this.cocktails"/>
+  <!--CocktailsDisplay Component-->
+  <div v-if="show_cocktail_list">
+    <CocktailsDisplay 
+    :cocktails="this.cocktails" 
+    @show-cocktail-info="showInfo" 
+    @emit-cocktail-info="storeCocktailInfo"/>
+  </div>
+
+  <!--CocktailInfo Component-->
+  <div v-if="show_cocktail_detail">
+    <CocktailInfo :cocktail="this.selected_cocktail"/>
   </div>
 
   <!--Buttons-->
-  <div
-    class="button"
-    v-show="show_btn1"
-  >
+  <div v-show="show_craft_btn">
     <v-btn
+      class="button"
       variant="flat"
+      start
       icon
-      color="#e3def3"
-      style="height:70px; width:70px"
       @click="() => {getCocktails(), hideCard()}"
       :ripple="false"
     >
-    <!-- <Vue3Lottie
-      animationLink="https://assets5.lottiefiles.com/packages/lf20_nAnzcg/61 - Martini.json"
-      speed="2"
-      background="transparent"
-      style="height:70px; width:70px"
-    /> -->
     Craft
     </v-btn>
   </div>
-  <div
-    class="button"
-    v-show="show_btn2"
-  >
+  <div v-show="show_back1_btn">
     <v-btn
+      class="button"
       variant="flat"
       icon
-      color="#e3def3"
-      style="height:70px; width:70px"
       @click="() => {showCard()}"
+      :ripple="false"
+    >
+    Back
+    </v-btn>
+  </div>
+  <div v-show="show_back2_btn">
+    <v-btn
+      class="button"
+      variant="flat"
+      icon
+      @click="() => {hideInfo()}"
       :ripple="false"
     >
     Back
@@ -135,13 +115,16 @@
 </template>
 
 <script>
-import CocktailsDisplay from '../components/CocktailsDisplay.vue';
+import urlVar from '../config.ts'
+import CocktailsDisplay from '../components/CocktailsDisplay.vue'
+import CocktailInfo from '../components/CocktailInfo.vue'
 import axios from 'axios'
 
 export default {
-  name: 'Ingredients',
+  name: 'Craft',
   components: {
-    Cocktails: CocktailsDisplay
+    CocktailsDisplay: CocktailsDisplay,
+    CocktailInfo: CocktailInfo
   },
   data () {
     return {
@@ -152,10 +135,13 @@ export default {
       activeTab: "Spirits",
       category: [],
       display_category: [],
-      show_card1: true,
-      show_card2: false,
-      show_btn1: true,
-      show_btn2: false,
+      selected_cocktail: null,
+      show_default: true,
+      show_cocktail_list: false,
+      show_cocktail_detail: false,
+      show_craft_btn: true,
+      show_back1_btn: false,
+      show_back2_btn: false
     }
   },
   mounted () {
@@ -166,7 +152,7 @@ export default {
     getIngredients() {
         axios({
             method:'get',
-            url: 'http://127.0.0.1:8000/ingredients/',
+            url: urlVar.url + ':' + urlVar.port + '/' + 'ingredients/',
         }).then(response => {
           this.ingredients = response.data;
           this.filtered_ingredients = this.ingredients.filter(ing => {
@@ -177,7 +163,7 @@ export default {
     getCategories() {
         axios({
             method:'get',
-            url: 'http://127.0.0.1:8000/categories/',
+            url: urlVar.url + ':' + urlVar.port + '/' + 'categories/',
         }).then(response => {
           this.category = response.data
           this.display_category = Object.keys(this.category)
@@ -205,40 +191,59 @@ export default {
         param_list.push(["ingredient", this.selection[i].id]);
       }
       const params = new URLSearchParams(param_list);
-      axios.get('http://127.0.0.1:8000/cocktails/',
+      axios.get(urlVar.url + ':' + urlVar.port + '/' + 'cocktails/',
           { params }
       ).then(response => {
         this.cocktails = response.data;
         console.log(this.cocktails)
       })
     },
+    storeCocktailInfo(cocktail) {
+      this.selected_cocktail=cocktail;
+    },
     hideCard() {
-      this.show_card1=!this.show_card1,
-      this.show_card2=true,
-      this.show_btn1=!this.show_btn1,
-      this.show_btn2=true
+      this.show_default=!this.show_default,
+      this.show_cocktail_list=true,
+      this.show_craft_btn=!this.show_craft_btn,
+      this.show_back1_btn=true
     },
     showCard() {
-      this.show_card1=true,
-      this.show_card2=!this.show_card2,
-      this.show_btn1=true,
-      this.show_btn2=!this.show_btn2
+      this.show_default=true,
+      this.show_cocktail_list=!this.show_cocktail_list,
+      this.show_craft_btn=true,
+      this.show_back1_btn=!this.show_back1_btn
     },
+    showInfo() {
+      this.show_cocktail_detail=true,
+      this.show_cocktail_list=!this.show_cocktail_list,
+      this.show_back1_btn=!this.show_back1_btn,
+      this.show_back2_btn=true
+    },
+    hideInfo() {
+      this.show_cocktail_detail=!this.show_cocktail_detail,
+      this.show_cocktail_list=true,
+      this.show_back1_btn=true,
+      this.show_back2_btn=!this.show_back2_btn
+    }
   }
 }
 </script>
 
 <style scoped>
-::v-deep.hover:hover {
+.v-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  white-space: nowrap;
+  padding: calc(var(--section-gap) / 4);
+}
+.v-tab:hover {
   color: hsla(245, 40%, 43%, 0.60);
   background-color: hsla(245, 40%, 90%, 0.1);
 }
-.select {
-  color: hsla(245, 35%, 55%, 0.9);
-  background-color: hsla(245, 40%, 90%, 0.1);
-}
-.noclick {
-  pointer-events: none;
+.v-list {
+  padding-left: 10px;
+  width: 450px;
 }
 .v-list-item-title {
   font-size: 14px;
@@ -247,20 +252,40 @@ export default {
   text-transform: uppercase;
   color: hsla(245, 60%, 27%, 0.45);
 }
-.button {
+.v-list-item.noclick {
+  pointer-events: none;
+}
+.v-list-item:hover {
+  color: hsla(245, 40%, 43%, 0.60);
+  background-color: hsla(245, 40%, 90%, 0.1);
+}
+.v-list-item.select {
+  color: hsla(245, 35%, 55%, 0.9);
+  background-color: hsla(245, 40%, 90%, 0.1);
+}
+.v-window {
+  scrollbar-width: none;
+}
+.v-btn.button {
   position: absolute;
-  right: -30px;
-  top: 47%;
+  right: -630px;
+  bottom: 380px;
+  height: 70px;
+  width: 70px;
+  background-color: #e3def3;
+  transition: all .2s ease-in-out;
+}
+.v-btn.button:hover {
+  transform: scale(1.1);
 }
 ::-webkit-scrollbar {
    display: none;
 }
-@media only screen and (min-width: 600px) {
+@media only screen and (min-width: 1024px) {
   .v-container {
-    display: flex;
-    place-items: center;
-    white-space: nowrap;
-    padding: calc(var(--section-gap) / 4);
+    min-width: 420px;
   }
+}
+@media only screen and (max-width: 1300px) {
 }
 </style>
