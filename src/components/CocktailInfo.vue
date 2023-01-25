@@ -16,7 +16,7 @@ const props = defineProps({
     >
       <v-list lines="one">
         <v-img
-        v-bind:src="urlVar.url + ':' + urlVar.imgPort + '/' + cocktail.name.toLowerCase().replaceAll(' ', '_') + '.jpg'"
+        v-bind:src="urlVar.url + ':' + urlVar.imgPort + urlVar.imgPath + '/' + cocktail.name.toLowerCase().replaceAll(' ', '_') + '.jpg'"
         aspect-ratio="1"
         cover
         class="mx-auto"

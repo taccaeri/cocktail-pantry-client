@@ -37,7 +37,7 @@ function handleClick(cocktail) {
                 @click="() => {handleClick(coc)}"
               >
                 <v-img
-                  v-bind:src="urlVar.url + ':' + urlVar.imgPort + '/' + coc.name.toLowerCase().replaceAll(' ', '_') + '.jpg'"
+                  v-bind:src="urlVar.url + ':' + urlVar.imgPort + urlVar.imgPath + '/' + coc.name.toLowerCase().replaceAll(' ', '_') + '.jpg'"
                   aspect-ratio="1"
                   cover
                   class="bg-white"
