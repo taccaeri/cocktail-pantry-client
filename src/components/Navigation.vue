@@ -14,7 +14,7 @@
         <HelloWorld msg="Cocktail Database"/>
 
         <nav>
-          <RouterLink to="/home">Home</RouterLink>
+          <RouterLink to="/">Home</RouterLink>
           <RouterLink to="/craft">Craft</RouterLink>
           <RouterLink to="/cocktails">Cocktails</RouterLink>
           <RouterLink to="/mypantry">MyPantry</RouterLink>
