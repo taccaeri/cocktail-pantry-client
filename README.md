@@ -6,7 +6,7 @@ Allows the user to search for cocktails containing available ingredients to ease
 
 ## How to Use
 
-Accessible at **[Cocktail Database](cocktails.taccaeri.com)** 
+Accessible at **[Cocktail Database](https://cocktails.taccaeri.com)** 
 
 Compatible only with PC browsers (for now). 
 
