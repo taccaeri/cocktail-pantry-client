@@ -1,14 +1,15 @@
 <script setup>
 import urlVar from '../config.ts';
 
+// pulls all cocktails from CraftView
 const props = defineProps({
    cocktails: Array
 })
-const emit = defineEmits(['show-cocktail-info', 'emit-cocktail-info', 'emit-click-event'])
+// emits selected cocktail array to CraftView
+const emit = defineEmits(['show-cocktail-info', 'emit-cocktail-info'])
 function handleClick(cocktail) {
   emit('show-cocktail-info'),
-  emit('emit-cocktail-info', cocktail),
-  console.log("emit to craftview successful")
+  emit('emit-cocktail-info', cocktail)
 }
 </script>
 
@@ -16,7 +17,7 @@ function handleClick(cocktail) {
 <template>
   <v-container>
     <v-card
-      class="d-flex flex-row" 
+      class="flex-row" 
       max-width="450"
       height="740"
       style="overflow-y: scroll"
@@ -34,7 +35,7 @@ function handleClick(cocktail) {
                 :class="['ma-6 fill-height']"
                 class="img-card"
                 v-ripple="false"
-                @click="() => {handleClick(coc)}"
+                @click="() => {handleClick(coc)}" 
               >
                 <v-img
                   v-bind:src="urlVar.url + ':' + urlVar.imgPort + urlVar.imgPath + '/' + coc.name.toLowerCase().replaceAll(' ', '_') + '.jpg'"
@@ -45,6 +46,8 @@ function handleClick(cocktail) {
                 </v-img>
               </v-card>
             </v-item>
+
+            <!-- cocktail name under cocktail image -->
             <v-btn
               size="small"
               variant="plain"
@@ -60,6 +63,7 @@ function handleClick(cocktail) {
     </v-card>
   </v-container>
 </template>
+
 
 <style scoped>
 .v-container {

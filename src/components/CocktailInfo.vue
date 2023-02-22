@@ -15,6 +15,8 @@ const props = defineProps({
       style="overflow-y: scroll"
     >
       <v-list lines="one">
+
+        <!-- Cocktail Image -->
         <v-img
         v-bind:src="urlVar.url + ':' + urlVar.imgPort + urlVar.imgPath + '/' + cocktail.name.toLowerCase().replaceAll(' ', '_') + '.jpg'"
         aspect-ratio="1"
@@ -22,18 +24,28 @@ const props = defineProps({
         class="mx-auto"
         >
         </v-img>
+
         <br>
         <br>
+        <!-- Cocktail Name -->
         <v-list-subheader class="text-h5">{{ cocktail.name }}</v-list-subheader>
+
         <br>
+        <!-- Category -->
         <v-list-subheader>&mdash; Category &mdash;</v-list-subheader>
         <v-list-item 
           v-for="cat in cocktail.display_category"
           :title="cat"/>
+
+        <!-- Bartender -->
         <v-list-subheader v-if="cocktail.bartender!=''">Bartender</v-list-subheader>
         <v-list-item v-if="cocktail.bartender!=''" :title="cocktail.bartender"/>
+
+        <!-- Glassware -->
         <v-list-subheader>&mdash; Glassware &mdash;</v-list-subheader>
         <v-list-item :title="cocktail.display_glassware"/>
+
+        <!-- Ingredients -->
         <v-list-subheader>&mdash; Ingredients &mdash;</v-list-subheader>
         <v-list-item
           v-for="ing in cocktail.ingredients"
@@ -47,22 +59,35 @@ const props = defineProps({
           <div style="color: gray" v-if="ing.optional!=null">
             &#10036; Optional
           </div>
-          <div style="color: gray; font-size: 10pt;" v-if="ing.notes!=''" class="wrap-text">
-            {{ ing.notes }}
+          <div style="color: gray; font-size: 10pt;" v-if="ing.method!=''" class="wrap-text">
+            {{ ing.method }}
           </div>
         </v-list-item>
+
+        <!-- Notes -->
         <v-list-subheader v-if="cocktail.notes!=''">&mdash; Notes &mdash;</v-list-subheader>
         <v-list-item class="wrap-text" v-if="cocktail.notes!=''">
           {{ cocktail.notes }}
         </v-list-item>
+
+        <!-- Method -->
         <v-list-subheader>&mdash; Method &mdash;</v-list-subheader>
         <v-list-item class="wrap-text">
           {{ cocktail.method }}
         </v-list-item>
+
+        <!-- Variations -->
         <v-list-subheader v-if="cocktail.variations!=null">&mdash; Variations &mdash;</v-list-subheader>
         <v-list-item class="wrap-text" v-if="cocktail.variations!=''" v-for="entry in cocktail.variations">
           &#10023; {{ entry }}
         </v-list-item>
+
+        <!-- Reference -->
+        <v-list-subheader>&mdash; Reference &mdash;</v-list-subheader>
+        <v-list-item class="wrap-text" style="font-size:13px;" v-if="cocktail.reference!=''">
+          {{ cocktail.reference }}
+        </v-list-item>
+        
       </v-list>
     </v-card>
   </v-container>

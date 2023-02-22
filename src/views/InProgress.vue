@@ -22,6 +22,7 @@
     </v-container>
 </template>
 
+
 <style scoped>
 .v-container {
   display: flex;

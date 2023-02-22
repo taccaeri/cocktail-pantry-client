@@ -1,6 +1,6 @@
 <template>
   <header>
-    <v-container v-show="default_mode">
+    <v-container>
       <img
           alt="Home-logo"
           class="logo"
@@ -9,36 +9,13 @@
           height="140"
       />
     </v-container>
-    <v-container v-show="default_mode">
+    <v-container>
       <div class="wrapper">
         <HelloWorld msg="Cocktail Database"/>
 
         <nav>
-          <!-- change home and craft router when replacing inprogress page-->
           <RouterLink to="/home">Home</RouterLink>
-          <RouterLink to="/">Craft</RouterLink>
-          <RouterLink to="/cocktails">Cocktails</RouterLink>
-          <RouterLink to="/mypantry">MyPantry</RouterLink>
-        </nav>
-      </div>
-    </v-container>
-    <v-container v-show="clicked_event_mode" class="shifted">2
-      <img
-          alt="Home-logo"
-          class="logo"
-          src="@/assets/logo.svg"
-          width="140"
-          height="140"
-      />
-    </v-container>
-    <v-container v-show="clicked_event_mode" class="shifted">
-      <div class="wrapper">
-        <HelloWorld msg="Cocktail Database"/>
-
-        <nav>
-          <!-- change home and craft router when replacing inprogress page-->
-          <RouterLink to="/home">Home</RouterLink>
-          <RouterLink to="/">Craft</RouterLink>
+          <RouterLink to="/craft">Craft</RouterLink>
           <RouterLink to="/cocktails">Cocktails</RouterLink>
           <RouterLink to="/mypantry">MyPantry</RouterLink>
         </nav>
@@ -47,42 +24,19 @@
   </header>
 </template>
 
-<!-- <script setup>
-  import { inject } from 'vue';
-  const cocktailClicked = inject('cocktailClicked')
-</script> -->
 
 <script>
 import { RouterLink } from "vue-router";
 import HelloWorld from "./HelloWorld.vue";
-import CocktailsDisplay from "./CocktailsDisplay.vue";
-import CocktailInfo from "./CocktailInfo.vue";
 
 export default {
   name: 'Navigation',
   components: {
     HelloWorld: HelloWorld,
-    CocktailsDisplay: CocktailsDisplay,
-    CocktailInfo: CocktailInfo
-  },
-  data () {
-    return {
-      default_mode: true,
-      clicked_event_mode: false,
-      hide: false,
-    }
-  },
-  mounted() {
-  },
-  methods: {
-    // recieveClickEvent() {
-    //   console.log("this is working")
-    //   this.default_mode=!this.default_mode,
-    //   this.clicked_event_mode=!this.clicked_event_mode
-    // }
   }
 }
 </script>
+
 
 <style scoped>
 header {

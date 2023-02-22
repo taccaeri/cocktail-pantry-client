@@ -1,13 +1,14 @@
 <template>
   <v-container v-if="show_default">
     <v-card class="d-flex flex-row" max-width="450" height="740">
+
       <!--Ingredient category tabs-->
       <v-tabs v-model="activeTab" direction="vertical">
         <v-tab
           v-for="(cat, index) in Object.keys(category)"
           @click="() => filterIngredients(cat)"
           :key="cat"
-          :value="category[cat]"
+          :value="cat"
           :ripple="false"
           :hide-slider="true"
         >
@@ -15,10 +16,11 @@
         </v-tab>
       </v-tabs>
 
+      <!-- Tab contents -->
       <v-window v-model="activeTab" style="overflow-y: scroll">
         <v-window-item
           v-for="(cat, index) in Object.keys(category)"
-          :value="category[cat]"
+          :value="cat"
         >
           <v-card flat>
             <v-list lines="one" select-strategy="multiple">
@@ -114,6 +116,7 @@
   </div>
 </template>
 
+
 <script>
 import urlVar from '../config.ts'
 import CocktailsDisplay from '../components/CocktailsDisplay.vue'
@@ -132,7 +135,7 @@ export default {
       filtered_ingredients: [],
       selection: [],
       cocktails: [],
-      activeTab: "Spirits",
+      activeTab: "spirits",
       category: [],
       display_category: [],
       selected_cocktail: null,
@@ -169,6 +172,7 @@ export default {
           this.display_category = Object.keys(this.category)
         });
     },
+    // Add selected ingredients to an array which will be passed as params to GET cocktails
     handleClick(item) {
       if (this.selection.includes(item)) {
         this.selection.splice(this.selection.indexOf(item), 1);
@@ -179,14 +183,16 @@ export default {
         this.selection.includes(item);
       })
     },
+    // Filter ingredients by ingredient category 
     filterIngredients(cat_name) {
       this.filtered_ingredients = [...this.ingredients];
       this.filtered_ingredients = this.filtered_ingredients.filter(ing => {
           return ing.category.includes(cat_name)
       })
     },
+    // Pass cocktail params to GET request
     getCocktails() {
-      var param_list = [];
+      var param_list = [["show_related", "true"]];
       for (var i = 0; i < this.selection.length; i++) {
         param_list.push(["ingredient", this.selection[i].id]);
       }
@@ -198,9 +204,11 @@ export default {
         console.log(this.cocktails)
       })
     },
+    // Send selected cocktail array to CocktailsDisplay as prop
     storeCocktailInfo(cocktail) {
       this.selected_cocktail=cocktail;
     },
+    // Toggle components invisible and visible based on button clicks
     hideCard() {
       this.show_default=!this.show_default,
       this.show_cocktail_list=true,
@@ -229,6 +237,7 @@ export default {
 }
 </script>
 
+
 <style scoped>
 .v-container {
   display: flex;
@@ -236,6 +245,7 @@ export default {
   align-items: center;
   white-space: nowrap;
   padding: calc(var(--section-gap) / 4);
+  scrollbar-width: none;
 }
 .v-tab:hover {
   color: hsla(245, 40%, 43%, 0.60);
