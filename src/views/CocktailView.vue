@@ -5,7 +5,7 @@
       max-width="450"
       height="740"
       style="overflow-y: scroll"
-      >
+    >
       <!-- In-progress search bar -->
       <!-- <v-autocomplete
         clearable
@@ -35,48 +35,48 @@
           {{ category[cat] }}
         </v-tab>
       </v-tabs> -->
-            <v-item-group>
-              <v-row align="center" no-gutters>
-                <v-col
-                  v-for="(coc, index) in cocktails"
-                  :key="index"
-                  cols="12"
-                  md="6"
+      <v-item-group>
+        <v-row align="center" no-gutters>
+          <v-col
+            v-for="(coc, index) in cocktails"
+            :key="index"
+            cols="12"
+            md="6"
+          >
+            <v-item>
+              <v-card
+                :class="['ma-6 fill-height']"
+                class="img-card"
+                v-ripple="false"
+                @click="() => {handleClick(coc)}"
+              >
+                <v-img
+                  v-bind:src="urlVar.url + ':' + urlVar.imgPort + urlVar.imgPath + '/' + coc.name.toLowerCase().replaceAll(' ', '_') + '.jpg'"
+                  aspect-ratio="1"
+                  cover
+                  class="bg-white"
                 >
-                  <v-item>
-                    <v-card
-                      :class="['ma-6 fill-height']"
-                      class="img-card"
-                      v-ripple="false"
-                      @click="() => {handleClick(coc)}"
-                    >
-                      <v-img
-                        v-bind:src="urlVar.url + ':' + urlVar.imgPort + urlVar.imgPath + '/' + coc.name.toLowerCase().replaceAll(' ', '_') + '.jpg'"
-                        aspect-ratio="1"
-                        cover
-                        class="bg-white"
-                      >
-                      </v-img>
-                    </v-card>
-                  </v-item>
-                  <v-btn class="cocktail-name"
-                    size="small"
-                    variant="plain"
-                    width="175px"
-                    v-ripple="false"
-                    @click="() => {handleClick(coc)}"
-                    >
-                    {{ coc.name }}
-                  </v-btn>
-                </v-col>
-              </v-row>
-            </v-item-group>
+                </v-img>
+              </v-card>
+            </v-item>
+            <v-btn class="cocktail-name"
+              size="small"
+              variant="plain"
+              width="175px"
+              v-ripple="false"
+              @click="() => {handleClick(coc)}"
+              >
+              {{ coc.name }}
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-item-group>
       </v-card>
   </v-container>
 
   <!--CocktailInfo Component-->
   <div v-if="show_cocktail_detail">
-    <CocktailInfo :cocktail="this.selected_cocktail"/>
+    <CocktailInfo :cocktail="selected_cocktail"/>
   </div>
 
   <!--Buttons-->
@@ -131,6 +131,7 @@ export default {
         url: urlVar.url + ':' + urlVar.port + '/' + 'cocktails/',
       }).then(response => {
         this.cocktails = response.data;
+        console.log(this.cocktails)
       })
     },
     getCategories() {
@@ -148,11 +149,10 @@ export default {
     //   })
     // },
     handleClick(cocktail) {
+      this.selected_cocktail=cocktail,
       this.show_main=!this.show_main,
       this.show_cocktail_detail=true,
-      this.show_back_btn=true,
-      this.selected_cocktail=cocktail
-
+      this.show_back_btn=true
     },
     showMain() {
       this.show_main=true,

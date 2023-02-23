@@ -83,6 +83,25 @@
               <br>
             </v-expansion-panel-text>
           </v-expansion-panel>
+          <v-expansion-panel :elevation="0" style="background: #f5f2fd;">
+            <v-expansion-panel-title class="wrap-text" style="font-size: 14px; color:#9688d1; text-align: center;">
+              Github
+            </v-expansion-panel-title>
+            <v-expansion-panel-text class="wrap-text" style="font-size: 12px;">
+              <br>
+              <v-btn variant="plain" 
+              :href="'https://github.com/taccaeri/cocktail-pantry-client'">
+              Front-End | Vue
+              </v-btn>
+              <br>
+              <v-btn variant="plain" 
+              :href="'https://github.com/taccaeri/cocktail-pantry'">
+              Back-End | Django
+            </v-btn>
+              <br>
+              <br>
+            </v-expansion-panel-text>
+          </v-expansion-panel>
         </v-expansion-panels>
       </v-card>
       </v-card>
