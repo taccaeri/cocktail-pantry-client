@@ -1,69 +1,89 @@
 <template>
-  <v-container v-if="show_default">
-    <v-card class="d-flex flex-row" max-width="450" height="740">
+  <v-container class="flex-column" v-if="show_default">
+    <v-col style="max-width: 450px; max-height: 50px;">
+      <v-autocomplete
+        v-model="searched_item"
+        label="Search Ingredients"
+        :items="search_ingredients"
+        item-title="name"
+        item-value="id"
+        :highlight="true"
+        :ignoreCase="true"
+        :ignoreAccent="true"
+        :menu-props="{maxHeight: 400}"
+        variant="underlined"
+        clearable
+        single-line
+        hide-details
+        @blur="scrollIntoView()"
+      >
+      </v-autocomplete>
+    </v-col>
+    <v-container v-if="show_default">
+      <v-card class="d-flex flex-row" max-width="450" height="740">
+        <!--Ingredient category tabs-->
+        <v-tabs v-model="activeTab" direction="vertical">
+          <v-tab
+            v-for="(cat, index) in Object.keys(category)"
+            @click="() => filterIngredients(cat)"
+            :key="cat"
+            :value="cat"
+            :ripple="false"
+            :hide-slider="true"
+          >
+            {{ cat }}
+          </v-tab>
+        </v-tabs>
 
-      <!--Ingredient category tabs-->
-      <v-tabs v-model="activeTab" direction="vertical">
-        <v-tab
-          v-for="(cat, index) in Object.keys(category)"
-          @click="() => filterIngredients(cat)"
-          :key="cat"
-          :value="cat"
-          :ripple="false"
-          :hide-slider="true"
-        >
-          {{ cat }}
-        </v-tab>
-      </v-tabs>
-
-      <!-- Tab contents -->
-      <v-window v-model="activeTab" style="overflow-y: scroll">
-        <v-window-item
-          v-for="(cat, index) in Object.keys(category)"
-          :value="cat"
-        >
-          <v-card flat>
-            <v-list lines="one" select-strategy="multiple">
-              <template v-for="sub_cat in Object.keys(category[cat])">
-                <v-list-item
-                  v-if="typeof(category[cat]) == 'object'"
-                  :key="category[cat][sub_cat]"
-                  :value="category[cat][sub_cat]"
-                  class="noclick"
-                >
-                  <v-list-item-title>
-                    {{ category[cat][sub_cat] }}
-                  </v-list-item-title>
-                </v-list-item>
-                <template v-for="(ing, index) in filtered_ingredients">
+        <!-- Tab contents -->
+        <v-window v-model="activeTab" style="overflow-y: scroll">
+          <v-window-item
+            v-for="(cat, index) in Object.keys(category)"
+            :value="cat"
+          >
+            <v-card flat>
+              <v-list lines="one" select-strategy="multiple">
+                <template v-for="sub_cat in Object.keys(category[cat])">
                   <v-list-item
-                    v-ripple="false"
-                    v-if="ing.category.includes(sub_cat)"
-                    :key="ing"
-                    :title="ing.name"
-                    :value="index"
-                    @click="() => {handleClick(ing)}"
-                    :class="{select: this.selection.includes(ing)}"
+                    v-if="typeof(category[cat]) == 'object'"
+                    :key="category[cat][sub_cat]"
+                    :value="category[cat][sub_cat]"
+                    class="noclick"
                   >
+                    <v-list-item-title>
+                      {{ category[cat][sub_cat] }}
+                    </v-list-item-title>
                   </v-list-item>
+                  <template v-for="(ing, index) in filtered_ingredients">
+                    <v-list-item
+                      v-ripple="false"
+                      v-if="ing.category.includes(sub_cat)"
+                      :key="ing"
+                      :title="ing.name"
+                      :value="index"
+                      @click="() => {handleClick(ing)}"
+                      :class="{select: this.selection.includes(ing)}"
+                    >
+                    </v-list-item>
+                  </template>
                 </template>
-              </template>
-              <v-list-item
-                v-ripple="false"
-                v-for="(ing, index) in filtered_ingredients"
-                v-if="typeof(category[cat]) == 'string'"
-                :key="ing"
-                :title="ing.name"
-                :value="index"
-                @click="() => {handleClick(ing)}"
-                :class="{select: this.selection.includes(ing)}"
-              >
-              </v-list-item>
-            </v-list>
-          </v-card>
-        </v-window-item>
-      </v-window>
-    </v-card>
+                <v-list-item
+                  v-ripple="false"
+                  v-for="(ing, index) in filtered_ingredients"
+                  v-if="typeof(category[cat]) == 'string'"
+                  :key="ing"
+                  :title="ing.name"
+                  :value="index"
+                  @click="() => {handleClick(ing)}"
+                  :class="{select: this.selection.includes(ing)}"
+                >
+                </v-list-item>
+              </v-list>
+            </v-card>
+          </v-window-item>
+        </v-window>
+      </v-card>
+    </v-container>
   </v-container>
 
   <!--CocktailsDisplay Component-->
@@ -144,12 +164,16 @@ export default {
       show_cocktail_detail: false,
       show_craft_btn: true,
       show_back1_btn: false,
-      show_back2_btn: false
+      show_back2_btn: false,
+      search_ingredients: [],
+      searched_item: null,
+      refined_search: null
     }
   },
   mounted () {
     this.getIngredients();
     this.getCategories();
+    this.getSearchIng();
   },
   methods: {
     getIngredients() {
@@ -207,6 +231,25 @@ export default {
     // Send selected cocktail array to CocktailsDisplay as prop
     storeCocktailInfo(cocktail) {
       this.selected_cocktail=cocktail;
+    },
+    getSearchIng() {
+      
+    },
+    scrollIntoView() {
+      console.log(this.searched_item);
+      for (var i = 0; i < this.ingredients.length; i++) {
+        if (this.ingredients[i].id == this.searched_item) {
+          this.refined_search = this.ingredients[i].category[0];
+        }  
+      }
+      console.log(this.refined_search);
+      this.activeTab = this.refined_search;
+      
+      // var category = this.searched_ing.category;
+      // this.activeTab = category;
+
+      // const element = document.getElementById(this.searched_ing);
+      // element.scrollIntoView();
     },
     // Toggle components invisible and visible based on button clicks
     hideCard() {

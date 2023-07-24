@@ -48,6 +48,8 @@
               <br>
               &#10022; Compatibility to mobile and tablet devices
               <br>
+              &#10022; Add more cocktails
+              <br>
               <br>
             </v-expansion-panel-text>
           </v-expansion-panel>
