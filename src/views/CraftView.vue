@@ -84,6 +84,15 @@
         </v-window>
       </v-card>
     </v-container>
+    <v-switch
+    v-model="toggle_status"
+    hide-details
+    inset
+    color="rgba(157, 153, 202, 0.8)"
+    true-value="include cocktails with unselected ingredients"
+    false-value="exclude cocktails with unselected ingredients"
+    :label="`${toggle_status}`"
+    ></v-switch>
   </v-container>
 
   <!--CocktailsDisplay Component-->
@@ -167,13 +176,25 @@ export default {
       show_back2_btn: false,
       search_ingredients: [],
       searched_item: null,
-      refined_search: null
+      refined_search: null,
+      toggle_status: "exclude cocktails with unselected ingredients",
+      current_param: false
     }
   },
   mounted () {
     this.getIngredients();
     this.getCategories();
     this.getSearchIng();
+  },
+  watch: {
+    toggle_status(status_change){
+      if (status_change == "include cocktails with unselected ingredients") {
+        this.current_param = true;
+      } else if (status_change == "exclude cocktails with unselected ingredients") {
+        this.current_param = false;
+      }
+      console.log(this.current_param);
+    }
   },
   methods: {
     getIngredients() {
@@ -217,6 +238,14 @@ export default {
     // Pass cocktail params to GET request
     getCocktails() {
       var param_list = [["show_related", "true"]];
+      if (this.current_param == false) {
+        param_list.push(["including_not_limited", "false"]);
+        console.log("false");
+      } else {
+        param_list.push(["including_not_limited", "true"]);
+        console.log("true");
+      }
+      //var param_list = [["show_related", "true"], ["including_not_limited", "true"]];
       for (var i = 0; i < this.selection.length; i++) {
         param_list.push(["ingredient", this.selection[i].id]);
       }
@@ -225,7 +254,7 @@ export default {
           { params }
       ).then(response => {
         this.cocktails = response.data;
-        console.log(this.cocktails)
+        // console.log(this.cocktails);
       })
     },
     // Send selected cocktail array to CocktailsDisplay as prop
@@ -236,13 +265,13 @@ export default {
       
     },
     scrollIntoView() {
-      console.log(this.searched_item);
+      // console.log(this.searched_item);
       for (var i = 0; i < this.ingredients.length; i++) {
         if (this.ingredients[i].id == this.searched_item) {
           this.refined_search = this.ingredients[i].category[0];
         }  
       }
-      console.log(this.refined_search);
+      // console.log(this.refined_search);
       this.activeTab = this.refined_search;
       
       // var category = this.searched_ing.category;
@@ -318,6 +347,9 @@ export default {
 }
 .v-window {
   scrollbar-width: none;
+}
+.v-switch{
+  color:hsla(245, 32%, 70%, 0.8);
 }
 .v-btn.button {
   position: absolute;
