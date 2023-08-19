@@ -42,8 +42,6 @@
               <br>
               &#10022; Enable cookies to save ingredient selections
               <br>
-              &#10022; Toggle button on the Craft page to switch between cocktail results that 1) contain only the selected ingredients or 2) include but are not limited to the ingredient selection
-              <br>
               &#10022; Search bar on the Cocktails page. Allow search via name and category.
               <br>
               &#10022; Compatibility to mobile and tablet devices
